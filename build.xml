@@ -1,19 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="2.socket-server" name="GGWP__Facebook">    
+<project basedir="." default="Socket-server" name="GGWP__Facebook">    
 	<property environment="env"/>
-	<property name="source.dir" location="src"/>
-   	<property name="build.dir" location="bin"/>
-	<property name="classpath" location="${build.dir}"/>
+	<property name="src.dir" location="src"/>
+	<property name="bin.dir" location="bin"/>
+	<property name="lib.dir" location="lib"/>
+	<property name="dist.dir" location="dist"/>
+	<property name="resources.dir" location="resources"/>
 	
 	<property name="server.port" value="8001"/>
 	
-	<target name="1.compile" description="Builds the source code">
-		<delete dir="${build.dir}"/>
-		<mkdir dir="${build.dir}"/>
-		<javac srcdir="${source.dir}" destdir="${build.dir}" classpath="${classpath}" deprecation="true" fork="true" includeAntRuntime="no"/>
+	<path id="classpath">
+	        <fileset dir="${lib.dir}">
+	            <include name="**/*.jar"/>
+	        </fileset>
+	        <pathelement location="${bin.dir}"/>
+	        <pathelement location="${resources.dir}"/>
+	    </path>
+	
+    <target name="1.compile" description="Builds the source code">
+    	<delete dir="${bin.dir}"/>
+    	<mkdir dir="${bin.dir}"/>
+    	
+    	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="classpath" includeantruntime="false" fork="true" deprecation="true">
+            <include name="**/*.java"/>
+         </javac>
+    </target>
+	
+	<target name="2.enhance-classes" depends="1.compile" description="Adds JDO code to the persisten compiled classes">
+    	<taskdef name="enhancer" classpathref="classpath" classname="org.datanucleus.enhancer.EnhancerTask"/>
+   		<enhancer classpathref="classpath" failonerror="true">
+            <sysproperty key="log4j.configuration" value="file:${resources.dir}/log4j.properties"/>
+            <fileset dir="${bin.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+   		</enhancer>
     </target>
 
-	<target name="2.socket-server" description="Runs the Server Socket">
+    <target name="3.create-db-schema" depends="2.enhance-classes" description="Creates DB Schema on the DB Server">
+        <taskdef name="schematool" classpathref="classpath" classname="org.datanucleus.store.schema.SchemaToolTask"/>
+    	<schematool mode="create" classpathref="classpath" props="datanucleus.properties" failonerror="true">
+            <sysproperty key="log4j.configuration" value="file:${resources.dir}/log4j.properties"/>
+            <fileset dir="${bin.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </schematool>
+    </target>
+	
+	<target name="4.run-example" description="Runs a local test of the Server">
+        <java classname="dao.Main" classpathref="classpath" fork="true">
+        	<jvmarg value="-Dlog4j.configuration=log4j.properties"/>
+		</java>
+    </target>
+	
+	<target name="5.delete-db-schema" depends="2.enhance-classes" description="Drops DB sechema from the DB Server">
+		<taskdef name="schematool" classpathref="classpath" classname="org.datanucleus.store.schema.SchemaToolTask"/>
+    	<schematool mode="delete" classpathref="classpath" props="datanucleus.properties" failonerror="true">            
+    	   	<sysproperty key="log4j.configuration" value="file:${resources.dir}/log4j.properties"/>
+    	 	<fileset dir="${bin.dir}">
+           		<include name="**/*.class"/>
+            </fileset>
+        </schematool>
+	</target>
+	
+	
+	<target name="Socket-server" description="Runs the Server Socket">
 		<java classname="remote.TCPSocketServer" classpath="${classpath}" fork="true">
 	 		<arg value="${server.port}"/> 
         </java>
