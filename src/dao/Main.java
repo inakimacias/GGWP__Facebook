@@ -15,6 +15,54 @@ import jdo.Usuario;
 
 public class Main {
 	public static void main(String[] args) {
+		DataAccessObject dao = new DataAccessObject();
+		Usuario elDani = new Usuario();
+	    elDani.setEmail("danaso@opendeusto.es");
+	    elDani.setPassword("patata");
+	    
+	    Usuario elCorno = new Usuario();
+	    elCorno.setEmail("elCorno@gmail.com");
+	    elCorno.setPassword("danonino");
+	
+		System.out.println(elDani.toString());
+		System.out.println(elCorno.toString());
+		
+		dao.guardarUsuario(elCorno);
+		dao.guardarUsuario(elDani);
+		
+		System.out.println(elDani.toString());
+		System.out.println(elCorno.toString());
+		dao.mostrarUsuarios();
+		
+		System.out.println("-RECREO USUARIOS");
+		elDani.setEmail("danaso@opendeusto.es");
+	    elDani.setPassword("patata");
+	    elCorno.setEmail("elCorno@gmail.com");
+	    elCorno.setPassword("danonino");
+	    
+	    System.out.println(elDani.toString());
+		System.out.println(elCorno.toString());
+		dao.mostrarUsuarios();
+		
+		dao.validarUsuario(elDani);
+		
+		System.out.println(elDani.toString());
+		System.out.println(elCorno.toString());
+		dao.mostrarUsuarios();
+		
+		dao.actualizarPassword(elDani, "amapola");
+		
+		System.out.println(elDani.toString());
+		System.out.println(elCorno.toString());
+		dao.mostrarUsuarios();
+		
+		dao.borrarUsuario(elDani);
+		
+		System.out.println(elDani.toString());
+		System.out.println(elCorno.toString());
+		dao.mostrarUsuarios();
+	}
+	public static void main1(String[] args) {
 		BasicConfigurator.configure();
 		final Logger LOGGER = Logger.getLogger("Logger");
 		
