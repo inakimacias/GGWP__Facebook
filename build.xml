@@ -64,7 +64,7 @@
 	
 	
 	<target name="Socket-server" description="Runs the Server Socket">
-		<java classname="remote.TCPSocketServer" classpath="${classpath}" fork="true">
+		<java classname="remote.TCPSocketServer" classpathref="classpath" fork="true">
 	 		<arg value="${server.port}"/> 
         </java>
     </target>

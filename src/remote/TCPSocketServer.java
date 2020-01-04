@@ -32,7 +32,7 @@ public class TCPSocketServer {
 			while (true) {
 				//When a connection from a client is received, a new EchoService is created. The "accept()" method returns the socket to
 				//communicate with the client.
-				new EchoService(tcpServerSocket.accept());
+				new Router(tcpServerSocket.accept());
 				System.out.println(" - TCPSocketServer: New client connection accepted. Client Number: " + numClients++);
 			}
 		} catch (IOException e) {
