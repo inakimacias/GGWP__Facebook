@@ -45,8 +45,8 @@ public class Main {
 //		System.out.println(elCorno.toString());
 //		dao.mostrarUsuarios();
 		
-		dao.validarUsuario("daniel@gmail.com","elDani");
-		System.out.println(dao.validarUsuario("daniel@gmail.com","elDani"));
+		boolean b = dao.validarUsuario("daniel@gmail.com","elDani");
+		System.out.println(b);
 		
 //		System.out.println(elDani.toString());
 //		System.out.println(elCorno.toString());

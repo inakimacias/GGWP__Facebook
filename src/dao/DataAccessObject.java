@@ -130,6 +130,7 @@ public class DataAccessObject {
 	
 	public boolean validarUsuario(String email, String password) {
 		boolean existeUser=false;
+		System.out.println("CACA");
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 		try {

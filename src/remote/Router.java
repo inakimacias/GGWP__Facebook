@@ -73,6 +73,7 @@ public class Router extends Thread {
 	
 	public String validate(String email, String password) {
 		String btos;
+		System.out.println("hola");
 		boolean b = dao.validarUsuario(email, password);
 		
 		if(b==true) {
