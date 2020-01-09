@@ -8,17 +8,17 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.DataAccessObject;
-
+import services.ValidationService;
 /**
  * This class process the request of each client as a separated Thread.
  */
 public class Router extends Thread {
+	
 	private DataInputStream in;
 	private DataOutputStream out;
 	private Socket tcpSocket;
-	private DataAccessObject dao = null;
 	List<String> goodData = new ArrayList<String>();
+	private ValidationService vs = ValidationService.getInstance();
 	
 	public Router(Socket socket) {
 		try {
@@ -45,8 +45,8 @@ public class Router extends Thread {
 			//Route
 			switch(goodData.get(0)) {
 			case "val":
-				System.out.println(" - Router - Routing to Validation Service as email:"+goodData.get(1)+", password:"+goodData.get(2));
-				data = validate(goodData.get(1), goodData.get(2));
+				System.out.println(" - Router - Routing to Validation Service as nick:"+goodData.get(1)+", password:"+goodData.get(2));
+				data = vs.loginAutenticar(goodData.get(1), goodData.get(2));
 				break;
 			default:
 				System.out.println("Error routing");
@@ -69,21 +69,5 @@ public class Router extends Thread {
 			}
 		}
 		
-	}
-	
-	public String validate(String email, String password) {
-		String btos;
-		System.out.println("hola");
-		boolean b = dao.validarUsuario(email, password);
-		
-		if(b==true) {
-			btos="true";
-		}else {
-			btos="false";
-		}
-		
-		String myOut=btos+";"+email;
-
-		return myOut;
 	}
 }
