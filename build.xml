@@ -7,7 +7,7 @@
 	<property name="dist.dir" location="dist"/>
 	<property name="resources.dir" location="resources"/>
 	
-	<property name="server.port" value="8001"/>
+	<property name="server.port" value="8001"/> <!--8001-->
 	
 	<path id="classpath">
 	        <fileset dir="${lib.dir}">
